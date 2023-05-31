@@ -5,6 +5,8 @@ This app allows users to store, read, and search bookmarks end-to-end encrypted 
 - UI similar to the old google search, text-based with good readability
 - Bookmarks are encrypted with `bookmarksKey`. From the users password the `rootKey` is derived using Argon2. The first half of `rootKey` is used to encrypt `bookmarksKey`. That way if the user changes their password only `bookmarksKey` has to be reencrypted with the new `rootKey`.
 
+You can find the frontend at [cryptmark-frontend](github.com/amilch/cryptmark-frontend)
+
 ## Running
 
 Set environment variable SECRET_JWT_KEY. 
