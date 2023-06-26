@@ -38,6 +38,10 @@ public class User implements UserDetails {
     @Column
     private String serverPassword;
 
+    @Column
+    @JsonProperty
+    private String seed;
+
     @OneToMany(mappedBy = "user")
     @JsonProperty
     @JsonIdentityReference(alwaysAsId = true)

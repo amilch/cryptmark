@@ -23,6 +23,7 @@ public class AuthenticationService {
         if (repository.findByUsername(request.getUsername()).isPresent()) throw new UserAlreadyExistAuthenticationException(request.getUsername());
         var user = User.builder()
                 .username(request.getUsername())
+                .seed(request.getSeed())
                 .serverPassword(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();

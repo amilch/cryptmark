@@ -30,6 +30,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers("/auth/**")
                     .permitAll()
+                .requestMatchers("/users/{username}/seed")
+                    .permitAll()
                 .requestMatchers("/users/{username}/**")
                     .access(new WebExpressionAuthorizationManager("principal.username == #username"))
                 .anyRequest()
