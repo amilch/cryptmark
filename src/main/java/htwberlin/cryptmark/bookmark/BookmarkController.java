@@ -2,17 +2,10 @@ package htwberlin.cryptmark.bookmark;
 
 import htwberlin.cryptmark.user.User;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,17 +23,19 @@ public class BookmarkController {
 
     @PostMapping("/bookmarks")
     Bookmark replaceOrCreateBookmark(@RequestBody Bookmark newBookmark) {
+        System.out.println(newBookmark);
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var principal = authentication.getPrincipal();
 
         return repository.findByUserAndId((User) principal, newBookmark.getId())
                 .map(bookmark -> {
-                    bookmark.setEncryptedKey(newBookmark.getEncryptedKey());
-                    bookmark.setEncryptedContent(newBookmark.getEncryptedContent());
+                    bookmark.setEncryptedItemKey(newBookmark.getEncryptedItemKey());
+                    bookmark.setEncryptedItem(newBookmark.getEncryptedItem());
                     return repository.save(bookmark);
                 })
                 .orElseGet(() -> {
                     newBookmark.setUser((User) principal);
+                    System.out.println(newBookmark);
                     return repository.save(newBookmark);
                 });
     }

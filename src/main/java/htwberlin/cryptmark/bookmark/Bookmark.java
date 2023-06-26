@@ -1,6 +1,5 @@
 package htwberlin.cryptmark.bookmark;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -20,10 +19,10 @@ public class Bookmark {
     private Long id;
 
     @Column
-    private String encryptedKey;
+    private String encryptedItemKey;
 
     @Column
-    private String encryptedContent;
+    private String encryptedItem;
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -32,9 +31,9 @@ public class Bookmark {
 
     public Bookmark() {}
 
-    public Bookmark(String encryptedKey, String encryptedContent, User user) {
-        this.encryptedKey = encryptedKey;
-        this.encryptedContent = encryptedContent;
+    public Bookmark(String encryptedItemKey, String encryptedItem, User user) {
+        this.encryptedItemKey = encryptedItemKey;
+        this.encryptedItem = encryptedItem;
         this.user = user;
     }
 
@@ -46,20 +45,20 @@ public class Bookmark {
         this.id = id;
     }
 
-    public String getEncryptedKey() {
-        return encryptedKey;
+    public String getEncryptedItemKey() {
+        return encryptedItemKey;
     }
 
-    public void setEncryptedKey(String encryptedKey) {
-        this.encryptedKey = encryptedKey;
+    public void setEncryptedItemKey(String encryptedItemKey) {
+        this.encryptedItemKey = encryptedItemKey;
     }
 
-    public String getEncryptedContent() {
-        return encryptedContent;
+    public String getEncryptedItem() {
+        return encryptedItem;
     }
 
-    public void setEncryptedContent(String encryptedContent) {
-        this.encryptedContent = encryptedContent;
+    public void setEncryptedItem(String encryptedItem) {
+        this.encryptedItem = encryptedItem;
     }
 
     public User getUser() {
@@ -75,20 +74,20 @@ public class Bookmark {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bookmark bookmark = (Bookmark) o;
-        return Objects.equals(id, bookmark.id) && Objects.equals(encryptedKey, bookmark.encryptedKey) && Objects.equals(encryptedContent, bookmark.encryptedContent) && Objects.equals(user, bookmark.user);
+        return Objects.equals(id, bookmark.id) && Objects.equals(encryptedItemKey, bookmark.encryptedItemKey) && Objects.equals(encryptedItem, bookmark.encryptedItem) && Objects.equals(user, bookmark.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, encryptedKey, encryptedContent, user);
+        return Objects.hash(id, encryptedItemKey, encryptedItem, user);
     }
 
     @Override
     public String toString() {
         return "Bookmark{" +
                 "id=" + id +
-                ", encryptedKey='" + encryptedKey + '\'' +
-                ", encryptedContent='" + encryptedContent + '\'' +
+                ", encryptedKey='" + encryptedItemKey + '\'' +
+                ", encryptedContent='" + encryptedItem + '\'' +
                 ", user=" + user +
                 '}';
     }
