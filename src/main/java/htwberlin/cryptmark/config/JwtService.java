@@ -11,6 +11,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
 import java.security.Key;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,12 +37,16 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
+        Calendar c = Calendar.getInstance();
+        Date issuedDate = c.getTime();
+        c.add(Calendar.MINUTE, 30);
+        Date expirationDate = c.getTime();
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setIssuedAt(issuedDate)
+                .setExpiration(expirationDate)
                 .signWith(getSigninKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
