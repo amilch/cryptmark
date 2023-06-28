@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +20,14 @@ public class BookmarkController {
         var user = (User) principal;
         return repository.findByUserAndId(user, id)
                 .orElseThrow(() -> new BookmarkNotFoundException(id));
+    }
+
+    @GetMapping("/bookmarks")
+    public List<Bookmark> getAll() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = authentication.getPrincipal();
+
+        return repository.findByUser((User) principal);
     }
 
     @PostMapping("/bookmarks")

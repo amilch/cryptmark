@@ -18,11 +18,6 @@ private final UserRepository userRepository;
         return userRepository.findByUsername(username).orElseThrow();
     }
 
-    @GetMapping("/{username}/bookmarks")
-    public List<Bookmark> allBookmarks(@PathVariable String username) {
-        return userRepository.findByUsername(username).orElseThrow().getBookmarks();
-    }
-
     @GetMapping("/{username}/seed")
     public String seed(@PathVariable String username) {
         return userRepository.findByUsername(username).orElseThrow().getSeed();
