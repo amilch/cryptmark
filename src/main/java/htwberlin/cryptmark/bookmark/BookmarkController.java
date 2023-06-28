@@ -1,6 +1,7 @@
 package htwberlin.cryptmark.bookmark;
 
 import htwberlin.cryptmark.user.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ public class BookmarkController {
     private final BookmarkRepository repository;
 
     @GetMapping("/bookmarks/{id}")
-    Bookmark one(@PathVariable Long id){
+    public Bookmark one(@PathVariable Long id){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var principal = authentication.getPrincipal();
         var user = (User) principal;
@@ -22,7 +23,8 @@ public class BookmarkController {
     }
 
     @PostMapping("/bookmarks")
-    Bookmark replaceOrCreateBookmark(@RequestBody Bookmark newBookmark) {
+    @Transactional
+    public Bookmark replaceOrCreateBookmark(@RequestBody Bookmark newBookmark) {
         System.out.println(newBookmark);
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var principal = authentication.getPrincipal();
@@ -41,7 +43,12 @@ public class BookmarkController {
     }
 
     @DeleteMapping("/bookmarks/{id}")
-    void deleteBookmark(@PathVariable Long id, Principal principal) {
+    @Transactional
+    public void deleteBookmark(@PathVariable Long id) {
+        System.out.println("Deleting with id " + id.toString());
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = authentication.getPrincipal();
+
         repository.deleteByUserAndId((User) principal, id);
     }
 }
