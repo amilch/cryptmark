@@ -2,13 +2,25 @@ package htwberlin.cryptmark.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import htwberlin.cryptmark.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Objects;
 
+@Data
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id"
@@ -29,66 +41,18 @@ public class Bookmark {
     @JsonIdentityReference(alwaysAsId = true)
     private User user;
 
-    public Bookmark() {}
-
-    public Bookmark(String encryptedItemKey, String encryptedItem, User user) {
-        this.encryptedItemKey = encryptedItemKey;
-        this.encryptedItem = encryptedItem;
-        this.user = user;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEncryptedItemKey() {
-        return encryptedItemKey;
-    }
-
-    public void setEncryptedItemKey(String encryptedItemKey) {
-        this.encryptedItemKey = encryptedItemKey;
-    }
-
-    public String getEncryptedItem() {
-        return encryptedItem;
-    }
-
-    public void setEncryptedItem(String encryptedItem) {
-        this.encryptedItem = encryptedItem;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
+    @JsonIgnore
     public void setUser(User user) {
         this.user = user;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Bookmark bookmark = (Bookmark) o;
-        return Objects.equals(id, bookmark.id) && Objects.equals(encryptedItemKey, bookmark.encryptedItemKey) && Objects.equals(encryptedItem, bookmark.encryptedItem) && Objects.equals(user, bookmark.user);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, encryptedItemKey, encryptedItem, user);
-    }
-
-    @Override
-    public String toString() {
-        return "Bookmark{" +
-                "id=" + id +
-                ", encryptedKey='" + encryptedItemKey + '\'' +
-                ", encryptedContent='" + encryptedItem + '\'' +
-                ", user=" + user +
-                '}';
+    @PreRemove
+    @PreUpdate
+    @PrePersist
+    public void preventUnauthorizedWrites() {
+        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!this.user.equals(authenticatedUser)) {
+            throw new AccessDeniedException("Operation not allowed");
+        }
     }
 }

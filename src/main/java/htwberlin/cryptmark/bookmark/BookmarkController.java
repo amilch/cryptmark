@@ -7,56 +7,44 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class BookmarkController {
-    private final BookmarkRepository repository;
+    private final BookmarkService service;
 
     @GetMapping("/bookmarks/{id}")
-    public Bookmark one(@PathVariable Long id){
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var principal = authentication.getPrincipal();
-        var user = (User) principal;
-        return repository.findByUserAndId(user, id)
+    public Bookmark getBookmark(@PathVariable Long id){
+        return service.getBookmark(id)
                 .orElseThrow(() -> new BookmarkNotFoundException(id));
     }
 
     @GetMapping("/bookmarks")
     public List<Bookmark> getAll() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var principal = authentication.getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return repository.findByUser((User) principal);
+        return service.getAll(user);
     }
 
     @PostMapping("/bookmarks")
     @Transactional
-    public Bookmark replaceOrCreateBookmark(@RequestBody Bookmark newBookmark) {
-        System.out.println(newBookmark);
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var principal = authentication.getPrincipal();
+    public Bookmark createBookmark(@RequestBody Bookmark newBookmark) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return repository.findByUserAndId((User) principal, newBookmark.getId())
-                .map(bookmark -> {
-                    bookmark.setEncryptedItemKey(newBookmark.getEncryptedItemKey());
-                    bookmark.setEncryptedItem(newBookmark.getEncryptedItem());
-                    return repository.save(bookmark);
-                })
-                .orElseGet(() -> {
-                    newBookmark.setUser((User) principal);
-                    System.out.println(newBookmark);
-                    return repository.save(newBookmark);
-                });
+        newBookmark.setUser(user);
+        return service.createBookmark(newBookmark);
+    }
+
+    @PutMapping("/bookmarks")
+    @Transactional
+    public Optional<Bookmark> updateBookmark(@RequestBody Bookmark newBookmark) {
+        return service.updateBookmark(newBookmark);
     }
 
     @DeleteMapping("/bookmarks/{id}")
     @Transactional
     public void deleteBookmark(@PathVariable Long id) {
-        System.out.println("Deleting with id " + id.toString());
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var principal = authentication.getPrincipal();
-
-        repository.deleteByUserAndId((User) principal, id);
+        service.deleteBookmark(id);
     }
 }
