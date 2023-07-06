@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.core.env.Environment;
 
 import java.security.Key;
 import java.util.Calendar;
@@ -16,8 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@RequiredArgsConstructor
 @Service
 public class JwtService {
+    private final Environment environment;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -73,7 +76,7 @@ public class JwtService {
     }
 
     private Key getSigninKey() {
-       byte[] keyBytes = Decoders.BASE64.decode(System.getenv("SECRET_JWT_KEY"));
+       byte[] keyBytes = Decoders.BASE64.decode(environment.getProperty("SECRET_JWT_KEY"));
        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
