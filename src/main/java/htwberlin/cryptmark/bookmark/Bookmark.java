@@ -40,14 +40,4 @@ public class Bookmark {
     public void setUser(User user) {
         this.user = user;
     }
-
-    @PreRemove
-    @PreUpdate
-    @PrePersist
-    public void preventUnauthorizedWrites() {
-        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!this.user.equals(authenticatedUser)) {
-            throw new AccessDeniedException("Operation not allowed");
-        }
-    }
 }
