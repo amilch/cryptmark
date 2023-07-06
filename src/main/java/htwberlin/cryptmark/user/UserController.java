@@ -7,16 +7,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-private final UserRepository userRepository;
+    private final UserService service;
 
     @GetMapping("/{username}")
-    public User one(@PathVariable String username) {
-        return userRepository.findByUsername(username).orElseThrow();
+    public User getUser(@PathVariable String username) {
+        return service.getUser(username)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @GetMapping("/{username}/seed")
-    public String seed(@PathVariable String username) {
-        return userRepository.findByUsername(username).orElseThrow().getSeed();
+    public String getUserSeed(@PathVariable String username) {
+        return service.getUser(username)
+                .orElseThrow(UserNotFoundException::new)
+                .getSeed();
     }
 
 
