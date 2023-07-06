@@ -1,4 +1,4 @@
-package htwberlin.cryptmark.config;
+package htwberlin.cryptmark.jwt;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
