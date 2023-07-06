@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @JsonProperty
     private String seed;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty
     @JsonIdentityReference(alwaysAsId = true)
     private List<Bookmark> bookmarks;
