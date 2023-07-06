@@ -1,11 +1,7 @@
 package htwberlin.cryptmark.user;
 
-import htwberlin.cryptmark.bookmark.Bookmark;
-import htwberlin.cryptmark.bookmark.BookmarkNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
