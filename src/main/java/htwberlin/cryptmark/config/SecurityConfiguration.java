@@ -1,6 +1,6 @@
 package htwberlin.cryptmark.config;
 
-import jakarta.servlet.Filter;
+import htwberlin.cryptmark.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
