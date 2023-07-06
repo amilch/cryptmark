@@ -1,13 +1,13 @@
 package htwberlin.cryptmark.auth;
 
-import htwberlin.cryptmark.config.JwtService;
+import htwberlin.cryptmark.jwt.JwtService;
 import htwberlin.cryptmark.user.Role;
 import htwberlin.cryptmark.user.User;
 import htwberlin.cryptmark.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +35,10 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        var user = repository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateToken((User) auth.getPrincipal());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
