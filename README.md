@@ -2,10 +2,17 @@
 
 This app allows users to store, read, and search bookmarks end-to-end encrypted in the cloud.
 
-- UI similar to the old google search, text-based with good readability
-- Bookmarks are encrypted with `bookmarksKey`. From the users password the `rootKey` is derived using Argon2. The first half of `rootKey` is used to encrypt `bookmarksKey`. That way if the user changes their password only `bookmarksKey` has to be reencrypted with the new `rootKey`.
+Bookmarks are encrypted with `bookmarksKey`. From the users password the `rootKey` is derived using Argon2. 
+The first half of `rootKey` is used to encrypt `bookmarksKey`. That way if the user changes their password only `bookmarksKey` has to be reencrypted with the new `rootKey`.
 
 You can find the frontend at [cryptmark-frontend](https://github.com/amilch/cryptmark-frontend)
+
+## Live Demo
+
+You can find a running demo version at <https://amilch.uber.space>
+
+**It's only a development preview!**\
+Please don't use it to save anything of relevance. The server will be shut down at any time and the security of the code ist not tested.
 
 ## Running
 
